@@ -3,3 +3,5 @@ fastapi[all]
 pydantic
 beanie
 motor
+python-dotenv
+email-validator
