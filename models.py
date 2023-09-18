@@ -1,6 +1,6 @@
 from enum import Enum
-
-from pydantic import BaseModel, EmailStr, field_validator
+from beanie import Document
+from pydantic import BaseModel, EmailStr, computed_field
 
 
 class SubjectEnum(str, Enum):
@@ -10,9 +10,14 @@ class SubjectEnum(str, Enum):
     art = "Art"
 
 
-class Person(BaseModel):
+class Person(Document):
     first_name: str
     last_name: str
+
+    @computed_field
+    @property
+    def email(self) -> EmailStr:
+        return f"{self.first_name}+{self.last_name}@exampleschool.com"
 
 
 class Student(Person):
@@ -22,19 +27,16 @@ class Student(Person):
     All students must take english and math and at least one other subject
     """
 
-    email: EmailStr
+    # email: EmailStr
     subjects: list[SubjectEnum]
 
-    @field_validator("subjects")
-    @classmethod
-    def required_subjects(cls, subs: list):
-        assert all([SubjectEnum.math, SubjectEnum.english]) in subs, "students must take math and english"
-        assert len(subs) > 2, "students must take at least 2 subjects"
+    # @field_validator("subjects")
+    # @classmethod
+    # def required_subjects(cls, subs: list):
+    #     assert all([SubjectEnum.math, SubjectEnum.english]) in subs, "students must take math and english"
+    #     assert len(subs) > 2, "students must take at least 2 subjects"
 
 
-student = Student(
-    first_name="first",
-    last_name="last",
-    email="student@example.com",
-    subjects=[SubjectEnum.math, SubjectEnum.english, SubjectEnum.science],
-)
+class Teacher(Person):
+    # email: EmailStr
+    teaches: list[SubjectEnum]
