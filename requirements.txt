@@ -5,3 +5,5 @@ beanie
 motor
 python-dotenv
 email-validator
+uvicorn
+Jinja2
